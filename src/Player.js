@@ -63,5 +63,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         } else {
             this.anims.play('knight_m_idle', true);
         }
+        if(this.body.blocked.down){
+            console.log(this.body);
+        }
     }
 }
