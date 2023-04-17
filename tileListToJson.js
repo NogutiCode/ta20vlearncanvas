@@ -6,16 +6,31 @@ console.log(lines);
 let frames = [];
 lines.forEach(line => {
    let parts = line.split(' ');
-   let frame = {
-    filename: parts[0],
-    frame: {x:parts[1],y:parts[2],w:parts[3],h:parts[4]},
-    rotated: false,
-    trimmed: false,
-    spriteSourceSize: {x:0,y:0,w:parts[3],h:parts[4]},
-    sourceSize: {w:parts[3],h:parts[4]},
-    pivot: {x:0.5,y:0.5}
-   }
-   frames.push(frame);
+   if(parts[5] >= 1) {
+        for(let i = 0; i<parts[5]; i++){
+            let frame = {
+                filename: parts[0] + '_' + i,
+                frame: {x:parseInt(parts[1])+parseInt(parts[3])*i,y:parts[2],w:parts[3],h:parts[4]},
+                rotated: false,
+                trimmed: false,
+                spriteSourceSize: {x:0,y:0,w:parts[3],h:parts[4]},
+                sourceSize: {w:parts[3],h:parts[4]},
+                pivot: {x:0.5,y:0.5}
+            }
+            frames.push(frame);
+        }
+    } else {
+        let frame = {
+            filename: parts[0],
+            frame: {x:parts[1],y:parts[2],w:parts[3],h:parts[4]},
+            rotated: false,
+            trimmed: false,
+            spriteSourceSize: {x:0,y:0,w:parts[3],h:parts[4]},
+            sourceSize: {w:parts[3],h:parts[4]},
+            pivot: {x:0.5,y:0.5}
+        }
+        frames.push(frame);
+    }
 });
 let object = {
     frames: frames,
