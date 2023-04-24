@@ -1,8 +1,15 @@
 import Phaser from 'phaser';
-export class Player extends Phaser.GameObjects.Sprite {
+import { Arrow } from './Arrow';
+export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y){
-        super(scene, x, y, 'player');
-        this.setTexture('atlas', 'knight_m_idle_anim_0');
+        super(scene, x, y, 'atlas', 'knight_m_idle_anim_0');
+        scene.physics.add.existing(this);
+        this.setName('Player');
+        this.body.maxSpeed = 100;
+        this.lastShot = 0;
+        this.body.setDrag(200)
+
+
         this.anims.create({
             key: 'knight_m_idle',
             frames: this.anims.generateFrameNames('atlas', { prefix: 'knight_m_idle_anim_',start:0, end: 3}),
@@ -22,36 +29,47 @@ export class Player extends Phaser.GameObjects.Sprite {
             frameRate: 8
         });
         this.anims.play('knight_m_idle');
-        this.setScale(4);
-        this.maxSpeed = 300;
+      
+
         this.keys = {
             a: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
             s: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             d: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
             w: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+            space: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
         }
+        
+        scene.input.on('pointermove', (pointer) =>
+        {
+            this.pointer = {x: pointer.worldX, y: pointer.worldY};
+            
+        });
     }
-    move(key, delta){
-        let oppositeCheck = key.keyCode == 65 || key.keyCode == 68 ? (this.keys.s.isDown || this.keys.w.isDown) : (this.keys.a.isDown || this.keys.d.isDown);
-        let axis = key.keyCode == 65 || key.keyCode == 68 ? 'x' : 'y';
-        let direction = key.keyCode == 83 || key.keyCode == 68 ? 1 : -1;
-        if(key.isDown){
-            if(oppositeCheck){
-                this[axis] += direction * Math.sqrt((this.maxSpeed * this.maxSpeed)/2)  / 1000 * delta;
-            } else {
-                this[axis] += direction * this.maxSpeed / 1000 * delta;
-            }
-        }
-    }
+
     isMoving(){
         return this.keys.a.isDown || this.keys.d.isDown || this.keys.s.isDown || this.keys.w.isDown;
     }
     preUpdate(time, delta){
         super.preUpdate(time, delta);
-        this.move(this.keys.a, delta);
-        this.move(this.keys.d, delta);
-        this.move(this.keys.w, delta);
-        this.move(this.keys.s, delta);
+        if(this.keys.a.isDown){
+            this.body.velocity.x = -this.body.maxSpeed;
+        }
+        if(this.keys.d.isDown){
+            this.body.velocity.x = this.body.maxSpeed;
+        }
+        if(this.keys.s.isDown){
+            this.body.velocity.y = this.body.maxSpeed;
+        }
+        if(this.keys.w.isDown){
+            this.body.velocity.y = -this.body.maxSpeed;
+        }
+        if(this.keys.space.isDown){
+            if(time-this.lastShot > 1000){
+                this.scene.add.existing(new Arrow(this.scene, this.x, this.y, this.pointer));
+                this.lastShot = time;
+            }
+        }
+
         if(this.keys.a.isDown){
             this.setFlipX(true);
         }
