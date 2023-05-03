@@ -35,3 +35,9 @@ db.version(1).stores({
 });
 
 db.entities.put({id:4, name:'Player',x: 1000,y: 2000})
+
+game.canvas.addEventListener("click", async () => {
+  await game.canvas.requestPointerLock({
+    
+  });
+});
