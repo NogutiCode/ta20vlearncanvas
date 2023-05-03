@@ -12,6 +12,7 @@
     "vite": "^4.3.4"
   },
   "dependencies": {
+    "dexie": "^3.2.3",
     "phaser": "3.55.2"
   }
 }
