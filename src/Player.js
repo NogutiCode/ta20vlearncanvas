@@ -67,6 +67,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             if(time-this.lastShot > 1000){
                 this.scene.add.existing(new Arrow(this.scene, this.x, this.y, this.pointer));
                 this.lastShot = time;
+                console.log(window.electronAPI);
+                window.electronAPI.save({x:1000, y:2000});
             }
         }
 
