@@ -41,14 +41,8 @@ export class MainScene extends Scene{
         this.physics.add.collider(player, this.map.layers[0].tilemapLayer);
         const layer2 = this.map.createLayer(1, tiles, 0, 0);
         console.log(this);
-        this.i = 0;
-        this.text = this.add.text(this.cameras.main.centerX-this.cameras.main.displayWidth/2, this.cameras.main.centerY-this.cameras.main.displayHeight/2)
-        .setText('Click to move')
-        .setScrollFactor(0,0)
-        this.text.setShadow(1, 1, '#000000', 2); 
 
     }
     update(){
-        this.text.text = this.i++;
     }
 }

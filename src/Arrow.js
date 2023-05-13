@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 export class Arrow extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, target){
-        super(scene, x, y, 'atlas', 'weapon_arrow');
+        super(scene, x, y, 'atlas', 'weapon_knife');
         scene.physics.add.existing(this);
         this.body.maxSpeed = 300;
         this.body.setDrag(50);

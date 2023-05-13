@@ -9,6 +9,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.lastShot = 0;
         this.body.setDrag(200)
 
+        this.arrowsLeft = 3;
+        this.arrows = [];
+
+        this.text = scene.add.text(0, 0, '🗡️- ' + this.arrowsLeft, {
+            fontFamily: 'Arial',
+            fontSize: 15,
+            color: '#ffffff',
+          });
+          this.text.setOrigin(0.5);
+          this.text.setDepth(1);
 
         this.anims.create({
             key: 'knight_m_idle',
@@ -44,6 +54,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.pointer = {x: pointer.worldX, y: pointer.worldY};
             
         });
+
+        scene.physics.add.collider(this.arrows, this, (collision) => {
+            this.arrowsLeft += 1;
+            this.text.setText('🗡️- ' + this.arrowsLeft);
+            this.arrows.splice(this.arrows.indexOf(collision), 1);
+            collision.destroy();
+        });
+        
     }
 
     isMoving(){
@@ -51,6 +69,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
     preUpdate(time, delta){
         super.preUpdate(time, delta);
+        this.text.x = this.x;
+        this.text.y = this.y + 50 - this.height / 2 - 10;
         if(this.keys.a.isDown){
             this.body.velocity.x = -this.body.maxSpeed;
         }
@@ -65,10 +85,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
         if(this.keys.space.isDown){
             if(time-this.lastShot > 1000){
-                this.scene.add.existing(new Arrow(this.scene, this.x, this.y, this.pointer));
-                this.lastShot = time;
-                console.log(window.electronAPI);
-                window.electronAPI.save({x:1000, y:2000});
+                if(this.arrowsLeft > 0){
+                    let arrow = this.scene.add.existing(new Arrow(this.scene, this.x, this.y, this.pointer));
+                    this.arrows.push(arrow);
+                    this.lastShot = time;
+                    this.arrowsLeft -= 1;
+                    this.text.setText('🗡️- ' + this.arrowsLeft);
+                }
             }
         }
 
@@ -84,7 +107,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('knight_m_idle', true);
         }
         if(this.body.blocked.down){
-            console.log(this.body);
+            //console.log(this.body);
         }
     }
 }
